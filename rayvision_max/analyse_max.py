@@ -4,14 +4,29 @@ import os
 import subprocess
 import time
 
+from rayvision_max.constants import PACKAGE_NAME
+
 from rayvision_utils import constants
 from rayvision_utils import utils
 from rayvision_utils.exception.exception import CGFileNotExistsError
 
 
 class AnalyseMax(object):
-    def __init__(self, cg_file, software_version, project_name, plugin_config, workspace=None,
-                 max_exe_path=None, renderable_camera=None, render_software="3ds Max", platform="2"):
+    def __init__(self,
+                 cg_file,
+                 software_version,
+                 project_name,
+                 plugin_config,
+                 workspace=None,
+                 max_exe_path=None,
+                 renderable_camera=None,
+                 render_software="3ds Max",
+                 platform="2",
+                 logger=None,
+                 log_folder=None,
+                 log_name=None,
+                 log_level="DEBUG"
+                 ):
         """Initialize and examine the analysis information.
         Args:
             cg_file (str): Scene file path.
@@ -23,8 +38,17 @@ class AnalyseMax(object):
             renderable_camera (list): Camera to be rendered.
             render_software (str): Software name, Maya by default.
             platform (str): Platform no.
+            logger (object, optional): Custom log object.
+            log_folder (str, optional): Custom log save location.
+            log_name (str, optional): Custom log file name.
+            log_level (string):  Set log level, example: "DEBUG","INFO","WARNING","ERROR".
         """
-        self.logger = logging.getLogger(__name__)
+        self.logger = logger
+        if not self.logger:
+            from rayvision_log.core import init_logger
+            init_logger(PACKAGE_NAME, log_folder, log_name)
+            self.logger = logging.getLogger(__name__)
+            self.logger.setLevel(level=log_level.upper())
         self.cgfile = cg_file
         self.software_version = software_version
         self.project_name = project_name
