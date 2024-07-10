@@ -3,6 +3,7 @@ import logging
 import os
 import subprocess
 import time
+import threading
 
 from rayvision_max.constants import PACKAGE_NAME
 
@@ -57,7 +58,8 @@ class AnalyseMax(object):
         self.render_software = render_software
         self.renderable_camera = list(set(renderable_camera)) if renderable_camera is not None else []
 
-        workspace = os.path.join(self.check_workspace(workspace), str(int(time.time()))).replace("\\", "/")
+        dir_name = str(int(time.time())) + str(self.get_current_id())
+        workspace = os.path.join(self.check_workspace(workspace), dir_name).replace("\\", "/")
         if not os.path.exists(workspace):
             os.makedirs(workspace)
         self.workspace = workspace
@@ -75,6 +77,13 @@ class AnalyseMax(object):
         self.asset_info = {}
         self.upload_info = {}
         self.analysemax_py_dir = os.path.dirname(__file__)
+
+    @staticmethod
+    def get_current_id():
+        if isinstance(threading.current_thread(), threading._MainThread):
+            return os.getpid()
+        else:
+            return threading.get_ident()
 
     def analyse(self, no_upload=False):
         """Build a cmd command to perform an analysis scenario.
