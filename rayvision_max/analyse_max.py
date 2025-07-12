@@ -106,7 +106,7 @@ class AnalyseMax(object):
             # 'zip_exe_path': os.path.join(os.path.dirname(__file__), '7z.exe')
         }
         if self.max_exe_path:
-            options.updata({'max_exe_path': self.max_exe_path})
+            options.update({'max_exe_path': self.max_exe_path})
         analysemax_exe_path = os.path.join(self.analysemax_py_dir, 'tool', 'analysemax.exe')
         analyse_cmd = '"{}" "{}"'.format(analysemax_exe_path, json.dumps(options).replace('"', '""'))
         self.logger.debug(analyse_cmd)
